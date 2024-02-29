@@ -20,7 +20,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const initialContextValue: AppContextType = {
     strings: localeStrings,
     lang: localeInfo === "vi" ? "vi" : "en",
-    darkmode: false,
+    darkmode: true,
   };
 
   useEffect(() => {
