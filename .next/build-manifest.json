@@ -22,25 +22,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/en": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/en.js"
-    ],
-    "/en/about": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/en/about.js"
-    ],
     "/en/projects": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/en/projects.js"
     ],
-    "/vi": [
+    "/en/projects/[slug]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/vi.js"
+      "static/chunks/pages/en/projects/[slug].js"
     ]
   },
   "ampFirstPages": []

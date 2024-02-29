@@ -109,7 +109,7 @@ const ProjectPage: NextPage = () => {
           <div css={infoContainer}>
             <div css={infoContentContainer}>
               <div css={detailsContainer}>
-                <h3 css={mediumText}>Objectives:</h3>
+                {project.objectives && <h3 css={mediumText}>Objectives:</h3>}
                 <p css={description}>{project.objectives}</p>
               </div>
               <div css={detailsContainer}>
@@ -126,8 +126,9 @@ const ProjectPage: NextPage = () => {
                   </li>
                 ))}
               </ul>
-              <h3 css={mediumText}>Features</h3>
-
+              {project.features.length > 0 && (
+                <h3 css={mediumText}>Features</h3>
+              )}
               <ul css={toolList}>
                 {project.features.map((item, index) => (
                   <li key={index} css={toolItem({ darkmode })}>
@@ -143,13 +144,15 @@ const ProjectPage: NextPage = () => {
                 >
                   Website
                 </Link>
-                <Link
-                  href={project.sourceCode}
-                  target="_blank"
-                  css={buttonStyles({ darkmode })}
-                >
-                  Source Code
-                </Link>
+                {project.sourceCode && (
+                  <Link
+                    href={project.sourceCode}
+                    target="_blank"
+                    css={buttonStyles({ darkmode })}
+                  >
+                    Source Code
+                  </Link>
+                )}
               </div>
             </div>
           </div>
