@@ -3,6 +3,8 @@ import portfolio from "@/assets/images/projects-screenshot/portfolio-web.png";
 import explorix from "@/assets/images/projects-screenshot/explorix-web.png";
 import netflix from "@/assets/images/projects-screenshot/netflix-web.png";
 import amazon from "@/assets/images/projects-screenshot/amazon-web.png";
+import aa from "@/assets/images/projects-screenshot/aa-web.png";
+import factnameh from "@/assets/images/projects-screenshot/factnameh.png";
 
 export type ProjectInfo = {
   img: string;
@@ -17,6 +19,30 @@ export type ProjectInfo = {
 };
 
 export const projectInfos: ProjectInfo[] = [
+  {
+    slug: "advocacyassembly",
+    img: aa.src,
+    title: "Advocacy Assembly",
+    objectives: "",
+    description:
+      "Advocacy Assembly is a free e-learning platform featuring dozens of courses for human rights activists, campaigners and journalists. Launched in 2015, Advocacy Assembly was initially imagined as a space to train learners who couldn’t attend in-person workshops.",
+    tool: ["Typescript", "NextJs", "Emotion"],
+    link: "https://advocacyassembly.org/en/",
+    sourceCode: "",
+    features: [],
+  },
+  {
+    slug: "factnamehBrowserExtension",
+    img: factnameh.src,
+    title: "Factnameh Browser Extension",
+    objectives: "",
+    description:
+      "Factnameh Browser Extension is a fact checking extension that get data from Factnameh website",
+    tool: ["Typescript", "NextJs", "Emotion"],
+    link: "https://chromewebstore.google.com/detail/%D8%A7%D9%81%D8%B2%D9%88%D9%86%D9%87-%D9%81%DA%A9%D8%AA%E2%80%8C%D9%86%D8%A7%D9%85%D9%87/mjbablipiefhfeaiddmljgaoeeodlapn",
+    sourceCode: "",
+    features: [],
+  },
   {
     slug: "portfolio",
     img: portfolio.src,
