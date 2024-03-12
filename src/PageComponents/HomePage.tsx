@@ -1,11 +1,69 @@
 import PageContainer from "@/components/PageContainer";
-import { NextPage } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
 import PageMeta from "@/components/PageMeta";
 import NavBar from "@/components/Nav/NavBar";
 import Banner from "@/components/HomePage/Banner";
-import Card from "@/components/HomePage/Card";
+import SectionCard from "@/components/Card/SectionCard";
+import { css } from "@emotion/react";
+import { getPopularVideos, getVideos } from "@/lib/getVideo";
 
-const HomePage: NextPage = () => {
+const sectionCardWrapper = css`
+  margin-top: 1rem;
+  width: 100%;
+`;
+
+export type VideoInfo = {
+  kind: string;
+  etag: string;
+  id: {
+    kind: string;
+    videoId: string;
+  };
+  snippet: {
+    publishedAt: string;
+    channelId: string;
+    title: string;
+    description: string;
+    thumbnails: {
+      default: {
+        url: string;
+        width: number;
+        height: number;
+      };
+      medium: {
+        url: string;
+        width: number;
+        height: number;
+      };
+      high: {
+        url: string;
+        width: number;
+        height: number;
+      };
+    };
+    channelTitle: string;
+    liveBroadcastContent: string;
+    publishTime: string;
+  };
+};
+export type VideoInfoPreview = {
+  title: string;
+  imgUrl: string;
+  id: string;
+};
+
+type HomePageProps = {
+  disneyVideos: VideoInfoPreview[];
+  productivityVideos: VideoInfoPreview[];
+  travelVideos: VideoInfoPreview[];
+  popularVideos: VideoInfoPreview[];
+};
+const HomePage: NextPage<HomePageProps> = ({
+  disneyVideos,
+  productivityVideos,
+  travelVideos,
+  popularVideos,
+}) => {
   return (
     <PageContainer>
       <PageMeta title="Netflix - Home Page" description={"Nhung Nguyen"} />
@@ -16,9 +74,42 @@ const HomePage: NextPage = () => {
         subTitle="a very cute dog"
         imgUrl="/static/clifford.webp"
       />
-      <Card />
+
+      <div css={sectionCardWrapper}>
+        {disneyVideos && (
+          <SectionCard size="small" videos={disneyVideos} title={"Disney"} />
+        )}
+        {productivityVideos && (
+          <SectionCard
+            size="medium"
+            videos={productivityVideos}
+            title={"Disney"}
+          />
+        )}
+        {travelVideos && (
+          <SectionCard size="large" videos={travelVideos} title={"Disney"} />
+        )}
+
+        {popularVideos && (
+          <SectionCard title="Popular" videos={popularVideos} size="small" />
+        )}
+      </div>
     </PageContainer>
   );
 };
 
 export default HomePage;
+
+export const getServerSideProps: GetServerSideProps<
+  HomePageProps
+> = async () => {
+  const disneyVideos = await getVideos("disney trailer");
+  const productivityVideos = await getVideos("Productivity");
+
+  const travelVideos = await getVideos("indie music");
+  const popularVideos = await getPopularVideos();
+
+  return {
+    props: { disneyVideos, productivityVideos, travelVideos, popularVideos },
+  };
+};

@@ -31,3 +31,4 @@ node_modules
 # debug
 npm-debug.log*
 .next/trace
+.next/trace

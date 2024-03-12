@@ -58,26 +58,33 @@ const cardImg = css`
   display: block;
 
   max-width: 100%;
+
+  :hover {
+    z-index: 50;
+  }
 `;
 
 const imgPlaceHolder =
   "https://images.unsplash.com/photo-1485846234645-a62644f84728?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1340&q=80";
-const Card: FC<{ imgUrl: string; size: "small" | "medium" | "large" }> = memo(
-  ({ imgUrl = imgPlaceHolder, size = "medium" }) => {
-    const classMap = {
-      large: lgItem,
-      medium: mdItem,
-      small: smItem,
-    };
-    return (
-      <div css={container}>
-        Card
-        <motion.div css={classMap[size]} whileHover={{ scale: 1.2 }}>
-          <Image src={imgUrl} alt="image" layout="fill" css={cardImg} />
-        </motion.div>
-      </div>
-    );
-  },
-);
+const Card: FC<{
+  id?: number;
+  imgUrl: string;
+  size: "small" | "medium" | "large";
+}> = memo(({ imgUrl = imgPlaceHolder, size = "medium", id = 0 }) => {
+  const classMap = {
+    large: lgItem,
+    medium: mdItem,
+    small: smItem,
+  };
+
+  const scale = id === 0 ? { scaleY: 1.1 } : { scale: 1.1 };
+  return (
+    <div css={container}>
+      <motion.div css={classMap[size]} whileHover={{ ...scale }}>
+        <Image src={imgUrl} alt="image" layout="fill" css={cardImg} />
+      </motion.div>
+    </div>
+  );
+});
 
 export default Card;
