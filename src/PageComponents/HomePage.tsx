@@ -77,11 +77,11 @@ const HomePage: NextPage<HomePageProps> = ({
 
       <div css={sectionCardWrapper}>
         {disneyVideos && (
-          <SectionCard size="small" videos={disneyVideos} title={"Disney"} />
+          <SectionCard size="medium" videos={disneyVideos} title={"Disney"} />
         )}
         {productivityVideos && (
           <SectionCard
-            size="medium"
+            size="small"
             videos={productivityVideos}
             title={"Disney"}
           />
@@ -104,7 +104,7 @@ export const getServerSideProps: GetServerSideProps<
   HomePageProps
 > = async () => {
   const disneyVideos = await getVideos("disney trailer");
-  const productivityVideos = await getVideos("Productivity");
+  const productivityVideos = await getVideos("Lee Chang Sub");
 
   const travelVideos = await getVideos("indie music");
   const popularVideos = await getPopularVideos();

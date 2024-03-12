@@ -1,3 +1,5 @@
+import videoData from "../data/videos.json";
+
 export const getCommonVideos = async (url: string) => {
   const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 
@@ -19,14 +21,30 @@ export const getCommonVideos = async (url: string) => {
     return data?.items.map(
       (item: {
         id: { videoId: any };
-        snippet: { title: any; thumbnails: { high: { url: any } } };
+        snippet: {
+          thumbnails: { high: { url: any } };
+          title: string;
+          description: string;
+          publishedAt: string;
+          channelTitle: string;
+        };
+        statistics: {
+          viewCount: number;
+        };
       }) => {
         console.log({ id: item.id });
         const id = item.id?.videoId || item.id;
+        const snippet = item.snippet;
         return {
-          title: item.snippet.title,
+          title: snippet?.title,
           imgUrl: item.snippet.thumbnails.high.url,
           id,
+          description: snippet.description,
+          publishTime: snippet.publishedAt,
+          channelTitle: snippet.channelTitle,
+          statistics: item.statistics
+            ? { viewCount: item.statistics.viewCount ?? 0 }
+            : { viewCount: 0 },
         };
       },
     );
@@ -42,6 +60,14 @@ export const getVideos = (searchQuery: string) => {
 };
 
 export const getPopularVideos = () => {
-  const URL = "videos?part=snippet&chart=mostPopular&regionCode=US";
+  const URL =
+    "videos?part=statistics%2Csnippet%2CcontentDetails&chart=mostPopular&regionCode=US";
+
+  return getCommonVideos(URL);
+};
+
+export const getYoutubeVideoById = (videoId: string) => {
+  const URL = `videos?part=statistics%2Csnippet%2CcontentDetails&id=${videoId}`;
+
   return getCommonVideos(URL);
 };

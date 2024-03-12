@@ -2,6 +2,8 @@ import { css } from "@emotion/react";
 import Image from "next/image";
 import { FC, memo } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
+import routeLinks from "@/routeLinks";
 
 const imgMotionWrapper = css`
   position: relative;
@@ -68,22 +70,25 @@ const imgPlaceHolder =
   "https://images.unsplash.com/photo-1485846234645-a62644f84728?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1340&q=80";
 const Card: FC<{
   id?: number;
+  videoId: string;
   imgUrl: string;
   size: "small" | "medium" | "large";
-}> = memo(({ imgUrl = imgPlaceHolder, size = "medium", id = 0 }) => {
+}> = memo(({ imgUrl = imgPlaceHolder, size = "medium", id = 0, videoId }) => {
   const classMap = {
     large: lgItem,
     medium: mdItem,
     small: smItem,
   };
 
+  console.log(videoId);
+
   const scale = id === 0 ? { scaleY: 1.1 } : { scale: 1.1 };
   return (
-    <div css={container}>
+    <Link href={routeLinks.video({ videoId })} css={container}>
       <motion.div css={classMap[size]} whileHover={{ ...scale }}>
-        <Image src={imgUrl} alt="image" layout="fill" css={cardImg} />
+        <Image src={imgUrl} alt="image" fill sizes="600px 100%" css={cardImg} />
       </motion.div>
-    </div>
+    </Link>
   );
 });
 

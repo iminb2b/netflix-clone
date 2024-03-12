@@ -1,8 +1,10 @@
 import PageContainer from "@/components/PageContainer";
 import PageMeta from "@/components/PageMeta";
+import { getYoutubeVideoById } from "@/lib/getVideo";
 import { css } from "@emotion/react";
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
+import { VideoInfoPreview } from "./HomePage";
 
 const modal = css`
   position: absolute;
@@ -123,20 +125,19 @@ const likeBtnWrapper = css`
   margin-right: 0.5rem /* 8px */;
 `;
 
-const VideoPage: NextPage = () => {
-  const router = useRouter();
-
-  const video = {
-    title: "Hi cute dog",
-    publishTime: "1990-01-01",
-    description:
-      "A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that A big red is super cute, can he get any bigger? A big red A big red dog that is super cute, can he get any bigger? A big red A big red dog that is super cute, can he get any bigger?",
-    channelTitle: "Paramount Pictures",
-    viewCount: 10000,
+type VideoPageProps = {
+  video: {
+    channelTitle: string;
+    description: string;
+    id: string;
+    imgUrl: string;
+    publishTime: string;
+    statistics: { viewCount: number };
+    title: string;
   };
+};
 
-  const { title, publishTime, description, channelTitle, viewCount } = video;
-
+const VideoPage: NextPage<VideoPageProps> = ({ video }) => {
   return (
     <PageContainer>
       <PageMeta title="Netflix - Home Page" description={"Nhung Nguyen"} />
@@ -146,25 +147,27 @@ const VideoPage: NextPage = () => {
           width="100%"
           css={videoPlayer}
           height="360"
-          src={`https://www.youtube.com/embed/4zH5iYM4wJo?autoplay=0&origin=http://example.com&controls=0&rel=1`}
+          src={`https://www.youtube.com/embed/${video.id}?autoplay=0&origin=http://example.com&controls=0&rel=1`}
           frameBorder="0"
         ></iframe>
 
         <div css={modalBody}>
           <div css={modalBodyContent}>
             <div css={col1}>
-              <p css={publishTimeLabel}>{publishTime}</p>
-              <p css={text}>{title}</p>
-              <p css={descriptionLabel}>{description}</p>
+              <p css={publishTimeLabel}>{video.publishTime}</p>
+              <p css={text}>{video.title}</p>
+              <p css={descriptionLabel}>{video.description}</p>
             </div>
             <div css={col2}>
               <p css={subTextWrapper}>
                 <span css={textColor}>Cast: </span>
-                <span css={channelTitleLabel}>{channelTitle}</span>
+                <span css={channelTitleLabel}>{video.channelTitle}</span>
               </p>
               <p css={subTextWrapper}>
                 <span css={textColor}>View Count: </span>
-                <span css={channelTitleLabel}>{viewCount}</span>
+                <span css={channelTitleLabel}>
+                  {video.statistics.viewCount}
+                </span>
               </p>
             </div>
           </div>
@@ -175,3 +178,14 @@ const VideoPage: NextPage = () => {
 };
 
 export default VideoPage;
+
+export const getServerSideProps: GetServerSideProps<VideoPageProps> = async ({
+  query,
+}) => {
+  const id = query.videoId?.toString() ?? "4zH5iYM4wJo";
+  const videos = await getYoutubeVideoById(id);
+
+  return {
+    props: { video: videos[0] },
+  };
+};

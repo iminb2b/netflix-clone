@@ -51,7 +51,13 @@ const SectionCard: FC<{
       <h2 css={titleLabel}>{title}</h2>
       <div css={cardWrapper}>
         {videos.map((video, index) => (
-          <Card imgUrl={video.imgUrl} size={size} id={0} key={index} />
+          <Card
+            imgUrl={video.imgUrl}
+            size={size}
+            id={0}
+            key={index}
+            videoId={video.id}
+          />
         ))}
       </div>
     </section>
