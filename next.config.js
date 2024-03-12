@@ -4,15 +4,6 @@ const nextConfig = {
   compiler: {
     emotion: true,
   },
-  redirects: async () => [
-    {
-      source: "/",
-      destination: "/en",
-      permanent: true
-    },
-  ]
-
-
 }
 
 module.exports = nextConfig

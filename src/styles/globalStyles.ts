@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
-import { Inter } from "next/font/google";
+import { Roboto_Slab } from "next/font/google";
 
-export const inter = Inter({
+export const robotoSlab = Roboto_Slab({
   adjustFontFallback: true,
   display: "swap",
   subsets: ["latin"],
@@ -90,7 +90,7 @@ const globalStyles = css`
 
   html,
   body {
-    ${inter.style}
+    ${robotoSlab.style}
 
     max-width: 100vw;
     font-size: 15px;
@@ -102,6 +102,11 @@ const globalStyles = css`
   a {
     color: inherit;
     text-decoration: none;
+  }
+
+  button {
+    border: none;
+    background: none;
   }
 
   @media (prefers-color-scheme: dark) {

@@ -1,20 +1,22 @@
-import HomePageProjects from "@/components/HomePage/HomePageProjects";
-import HomePageHero from "@/components/HomePage/HomePageHero";
-import PageContainer from "@/components/PageContent";
+import PageContainer from "@/components/PageContainer";
 import { NextPage } from "next";
 import PageMeta from "@/components/PageMeta";
-import HomePageMySkills from "@/components/HomePage/HomePageMySkills";
-import HomePageMyServices from "@/components/HomePage/HomePageMyServices";
-import HomePageAboutMe from "@/components/AboutMe/AboutMe";
+import NavBar from "@/components/Nav/NavBar";
+import Banner from "@/components/HomePage/Banner";
+import Card from "@/components/HomePage/Card";
 
 const HomePage: NextPage = () => {
   return (
     <PageContainer>
-      <PageMeta title="Min - Home Page" description={"Nhung Nguyen"} />
-      <HomePageHero />
-      <HomePageMyServices />
-      <HomePageMySkills />
-      <HomePageProjects />
+      <PageMeta title="Netflix - Home Page" description={"Nhung Nguyen"} />
+
+      <NavBar username="fjdkf" />
+      <Banner
+        title="Clifford the red dog"
+        subTitle="a very cute dog"
+        imgUrl="/static/clifford.webp"
+      />
+      <Card />
     </PageContainer>
   );
 };

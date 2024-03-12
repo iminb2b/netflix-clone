@@ -14,9 +14,9 @@ const pageContainer = css`
   flex-direction: column;
   align-items: center;
   min-height: calc(100vh);
-  background-repeat: repeat-y;
-  background-size: cover;
   position: relative;
+  background-color: black;
+  color: white;
 `;
 
 const Layout: FC<{
@@ -25,8 +25,6 @@ const Layout: FC<{
   return (
     <div css={pageContainer}>
       <Global styles={globalStyles} />
-
-      <Header />
 
       <div css={pageContent}>{children}</div>
 

@@ -1,4 +1,4 @@
-import PageContainer from "@/components/PageContent";
+import PageContainer from "@/components/PageContainer";
 import { css } from "@emotion/react";
 import { NextPage } from "next";
 import PageMeta from "./PageMeta";
