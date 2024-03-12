@@ -1,11 +1,8 @@
-import { FC, useContext } from "react";
+import { FC } from "react";
 import { css } from "@emotion/react";
-import { AppContext } from "@/context/AppContext";
 import routeLinks from "@/routeLinks";
 import NavListItem from "./NavListItem";
 import { useRouter } from "next/router";
-import LanguageLinks from "./LanguageLinks";
-import DarkModeSettings from "./DarkModeSettings";
 
 const container = css`
   display: flex;
@@ -25,27 +22,23 @@ export type NavInfo = {
 };
 
 const NavList: FC = () => {
-  const {
-    state: { lang },
-  } = useContext(AppContext);
-
   const router = useRouter();
 
   const navListInfo: NavInfo[] = [
     {
       name: "About",
-      url: routeLinks.about({ lang }),
+      url: routeLinks.about,
       isButtonLink: false,
     },
     {
       name: "Work",
       isButtonLink: false,
-      url: routeLinks.projects({ lang }),
+      url: routeLinks.projects,
     },
     {
       name: "Contact",
       isButtonLink: true,
-      url: routeLinks.contact({ lang }),
+      url: routeLinks.contact,
     },
   ];
 
@@ -58,10 +51,6 @@ const NavList: FC = () => {
           isActive={router.asPath === item.url}
         />
       ))}
-
-      <LanguageLinks lang={lang} />
-
-      <DarkModeSettings />
     </div>
   );
 };

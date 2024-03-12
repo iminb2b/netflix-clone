@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { FC, useContext } from "react";
+import { FC } from "react";
 import { css } from "@emotion/react";
 import colors from "@/value/colors";
 import routeLinks from "@/routeLinks";
-import { AppContext } from "@/context/AppContext";
 
 const logo = css`
   font-size: 2rem;
@@ -16,12 +15,8 @@ const logo = css`
 `;
 
 const Logo: FC = () => {
-  const {
-    state: { lang },
-  } = useContext(AppContext);
-
   return (
-    <Link href={routeLinks.homePage({ lang })} css={logo}>
+    <Link href={routeLinks.homePage} css={logo}>
       min.
     </Link>
   );

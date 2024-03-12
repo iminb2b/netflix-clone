@@ -2,27 +2,18 @@ import { ReactNode, createContext, useReducer } from "react";
 import stringsEn from "@/strings/stringsEn.json";
 import { Strings } from "@/types/stringTypes";
 
-export type AppContextType = {
-  strings: Strings;
-  lang: "en" | "vi";
-  darkmode: boolean;
-};
+export type AppContextType = {};
 
 interface AppAction {
   type: "enableDarkMode";
   payload: boolean;
 }
 
-interface AppState {
-  darkmode: boolean;
-  strings: Strings;
-  lang: "en" | "vi";
-}
+interface AppState {}
 const appReducer = (state: AppState, action: AppAction) => {
   const { type, payload } = action;
   switch (type) {
     case "enableDarkMode":
-      localStorage.setItem("darkmode", payload ? "true" : "false");
       return {
         ...state,
         darkmode: payload,
@@ -37,11 +28,7 @@ export const AppContext = createContext<{
   state: AppContextType;
   dispatch: React.Dispatch<AppAction>;
 }>({
-  state: {
-    strings: stringsEn,
-    lang: "en",
-    darkmode: false,
-  },
+  state: {},
   dispatch: () => null,
 });
 

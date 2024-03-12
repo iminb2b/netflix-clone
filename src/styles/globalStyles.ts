@@ -97,7 +97,6 @@ const globalStyles = css`
   }
 
   body {
-    background-image: url("/images/bgImg.png");
   }
 
   a {

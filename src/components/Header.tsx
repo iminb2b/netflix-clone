@@ -1,6 +1,5 @@
-import { FC, useContext, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { css } from "@emotion/react";
-import { AppContext } from "@/context/AppContext";
 import Logo from "./Logo";
 import { contentContainer } from "@/styles/generalStyles";
 import NavList from "./Nav/NavList";
@@ -55,11 +54,6 @@ const darkModeContainer = ({ scrollNav }: { scrollNav: boolean }) => css`
 `;
 
 const Header: FC = () => {
-  // const strings = useContext(AppContext);
-  const {
-    state: { darkmode },
-  } = useContext(AppContext);
-
   const [scrollNav, setScrollNav] = useState(false);
   const changeNav = () => {
     if (window.scrollY >= 80) {
@@ -84,15 +78,9 @@ const Header: FC = () => {
       })}
     >
       <div
-        css={
-          darkmode
-            ? darkModeContainer({
-                scrollNav: mobileHeaderNavDialogIsMounted || scrollNav,
-              })
-            : lightModeContainer({
-                scrollNav: mobileHeaderNavDialogIsMounted || scrollNav,
-              })
-        }
+        css={lightModeContainer({
+          scrollNav: mobileHeaderNavDialogIsMounted || scrollNav,
+        })}
       >
         <Logo />
         <NavList />
