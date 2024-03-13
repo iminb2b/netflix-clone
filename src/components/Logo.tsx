@@ -10,7 +10,6 @@ const logo = css`
   transition: all 0.3s ease;
 
   &:hover {
-    color: ${colors.purple};
   }
 `;
 

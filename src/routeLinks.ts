@@ -2,7 +2,9 @@ const routeLinks = {
   homePage: `/home`,
   about: `/about`,
   contact: `/contact`,
-  projects: `/projects`,
+  search: ({ searchQuery }: { searchQuery: string }) =>
+    `/search?searchQuery=${searchQuery ?? ""}`,
+  login: `/login`,
   myList: `/browse/my-list`,
   video: ({ videoId }: { videoId: string }) => `/video/${videoId}`,
 };

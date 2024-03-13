@@ -2,6 +2,9 @@ import { css } from "@emotion/react";
 import Image from "next/image";
 import { FC, memo } from "react";
 import { motion } from "framer-motion";
+import { Button, useDialogStore } from "@ariakit/react";
+import VideoPreviewModal from "../Video/VideoPreviewModal";
+import { VideoInfoPreview } from "@/PageComponents/HomePage";
 import Link from "next/link";
 import routeLinks from "@/routeLinks";
 
@@ -70,25 +73,29 @@ const imgPlaceHolder =
   "https://images.unsplash.com/photo-1485846234645-a62644f84728?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1340&q=80";
 const Card: FC<{
   id?: number;
-  videoId: string;
-  imgUrl: string;
+  video: VideoInfoPreview;
   size: "small" | "medium" | "large";
-}> = memo(({ imgUrl = imgPlaceHolder, size = "medium", id = 0, videoId }) => {
+}> = memo(({ size = "medium", video, id = 0 }) => {
   const classMap = {
     large: lgItem,
     medium: mdItem,
     small: smItem,
   };
-
-  console.log(videoId);
-
   const scale = id === 0 ? { scaleY: 1.1 } : { scale: 1.1 };
   return (
-    <Link href={routeLinks.video({ videoId })} css={container}>
-      <motion.div css={classMap[size]} whileHover={{ ...scale }}>
-        <Image src={imgUrl} alt="image" fill sizes="600px 100%" css={cardImg} />
-      </motion.div>
-    </Link>
+    <>
+      <Link href={routeLinks.video({ videoId: video.id })} css={container}>
+        <motion.div css={classMap[size]} whileHover={{ ...scale }}>
+          <Image
+            src={video.imgUrl}
+            alt="image"
+            fill
+            sizes="600px 100%"
+            css={cardImg}
+          />
+        </motion.div>
+      </Link>
+    </>
   );
 });
 

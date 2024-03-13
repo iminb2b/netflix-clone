@@ -1,11 +1,15 @@
 import PageContainer from "@/components/PageContainer";
-import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import PageMeta from "@/components/PageMeta";
 import NavBar from "@/components/Nav/NavBar";
 import Banner from "@/components/HomePage/Banner";
 import SectionCard from "@/components/Card/SectionCard";
 import { css } from "@emotion/react";
 import { getPopularVideos, getVideos } from "@/lib/getVideo";
+import { useRouter } from "next/router";
+import { useContext, useEffect } from "react";
+import { AppContext } from "@/context/AppContext";
+import routeLinks from "@/routeLinks";
 
 const sectionCardWrapper = css`
   margin-top: 1rem;
@@ -64,15 +68,28 @@ const HomePage: NextPage<HomePageProps> = ({
   travelVideos,
   popularVideos,
 }) => {
+  const router = useRouter();
+  const {
+    state: { username },
+  } = useContext(AppContext);
+
+  useEffect(() => {
+    if (!username) {
+      router.push(routeLinks.login);
+    }
+  }, []);
+
+  const popular = popularVideos[0];
   return (
     <PageContainer>
       <PageMeta title="Netflix - Home Page" description={"Nhung Nguyen"} />
 
-      <NavBar username="fjdkf" />
+      <NavBar />
       <Banner
-        title="Clifford the red dog"
+        title={popular?.title ?? "Clifford the red dog"}
         subTitle="a very cute dog"
-        imgUrl="/static/clifford.webp"
+        imgUrl={popular?.imgUrl ?? "/static/clifford.webp"}
+        id={popular?.id ?? "4zH5iYM4wJo"}
       />
 
       <div css={sectionCardWrapper}>
@@ -83,11 +100,11 @@ const HomePage: NextPage<HomePageProps> = ({
           <SectionCard
             size="small"
             videos={productivityVideos}
-            title={"Disney"}
+            title={"Productivity"}
           />
         )}
         {travelVideos && (
-          <SectionCard size="large" videos={travelVideos} title={"Disney"} />
+          <SectionCard size="large" videos={travelVideos} title={"Travel"} />
         )}
 
         {popularVideos && (

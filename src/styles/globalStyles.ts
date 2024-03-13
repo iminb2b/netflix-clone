@@ -104,9 +104,11 @@ const globalStyles = css`
     text-decoration: none;
   }
 
-  button {
+  button,
+  input {
     border: none;
     background: none;
+    outline: none;
   }
 
   @media (prefers-color-scheme: dark) {

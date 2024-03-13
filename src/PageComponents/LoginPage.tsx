@@ -1,13 +1,14 @@
 import PageContainer from "@/components/PageContainer";
 import PageMeta from "@/components/PageMeta";
+import { AppContext } from "@/context/AppContext";
 import routeLinks from "@/routeLinks";
+import colors from "@/value/colors";
 import { css } from "@emotion/react";
 import { NextPage } from "next";
-import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCallback } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 
 const container = css`
   display: flex;
@@ -15,7 +16,8 @@ const container = css`
   align-items: center;
   justify-content: flex-start;
   min-height: 100vh;
-  background-color: var(--black);
+  width: 100%;
+  background-color: ${colors.black};
 
   background-image: linear-gradient(rgb(0 0 0 / 60%), rgb(0 0 0 / 60%)),
     url("/static/signin-bg.jpeg");
@@ -25,8 +27,8 @@ const header = css`
   justify-content: space-between;
   width: 100%;
 
-  padding-top: 2rem /* 32px */;
-  padding-bottom: 2rem /* 32px */;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 `;
 const main = css`
   width: 100%;
@@ -46,7 +48,7 @@ const mainWrapper = css`
 
   padding-bottom: 6rem;
   padding-top: 2rem /* 32px */;
-  background-color: var(--black20);
+  background-color: ${colors.black20};
 
   height: 33.333333%;
   padding-left: 3rem /* 48px */;
@@ -60,7 +62,7 @@ const mainWrapper = css`
   }
 `;
 const signinHeader = css`
-  color: var(--white10);
+  color: ${colors.white10};
   font-weight: 700;
   font-size: 2rem;
   margin-bottom: 2rem /* 32px */;
@@ -72,7 +74,7 @@ const emailInput = css`
   padding-left: 0.5rem /* 8px */;
   padding-right: 0.5rem /* 8px */;
 
-  color: var(--black30);
+  color: ${colors.black30};
 
   width: 100%;
   padding-bottom: 1rem /* 16px */;
@@ -80,14 +82,16 @@ const emailInput = css`
   height: 3rem /* 48px */;
   min-width: 240px;
   font-size: 1.2rem;
+
+  background-color: ${colors.white10};
 `;
 const userMsg = css`
   margin-top: 0.25rem /* 4px */;
   margin-bottom: 0.25rem /* 4px */;
-  color: var(--white20);
+  color: ${colors.white20};
 `;
 const loginBtn = css`
-  background-color: var(--red10);
+  background-color: ${colors.red10};
 
   padding-left: 3rem /* 48px */;
   padding-right: 3rem /* 48px */;
@@ -97,7 +101,7 @@ const loginBtn = css`
   font-size: 1.25rem /* 20px */;
   line-height: 1.75rem /* 28px */;
 
-  color: var(--white10);
+  color: ${colors.white10};
   width: 100%;
 
   border-radius: 0.375rem /* 6px */;
@@ -123,7 +127,7 @@ const logoLink = css`
   font-weight: 500;
   font-size: 1rem;
   align-items: center;
-  color: var(--white10);
+  color: ${colors.white10};
   margin-bottom: 1rem /* 16px */;
 
   @media (min-width: 768px) {
@@ -132,13 +136,33 @@ const logoLink = css`
 `;
 
 const logoWrapper = css`
-  color: var(--red);
+  color: ${colors.red};
   width: 8rem /* 128px */;
 `;
 
 const LoginPage: NextPage = () => {
   const router = useRouter();
-  const handleLoginWithEmail = useCallback(() => {
+  const { dispatch } = useContext(AppContext);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+
+  const {
+    state: { username },
+  } = useContext(AppContext);
+
+  useEffect(() => {
+    if (username) {
+      router.push(routeLinks.homePage);
+    }
+  }, []);
+
+  const handleLoginWithEmail = useCallback(async (e: any) => {
+    e.preventDefault();
+    const email = emailInputRef.current?.value;
+    localStorage.setItem("username", emailInputRef.current?.value ?? "");
+    if (email) {
+      dispatch({ type: "login", username: email });
+    }
+
     router.push(routeLinks.homePage);
   }, []);
   return (
@@ -159,18 +183,23 @@ const LoginPage: NextPage = () => {
             </Link>
           </div>
         </header>
-        <main css={main}>
+        <form css={main} onSubmit={handleLoginWithEmail}>
           <div css={mainWrapper}>
             <h1 css={signinHeader}>Sign In</h1>
 
-            <input type="email" placeholder="Email address" css={emailInput} />
+            <input
+              ref={emailInputRef}
+              type="email"
+              placeholder="Email address"
+              css={emailInput}
+            />
 
             <p css={userMsg}></p>
-            <button onClick={handleLoginWithEmail} css={loginBtn}>
+            <button css={loginBtn} type="submit">
               Sign In
             </button>
           </div>
-        </main>
+        </form>
       </div>
     </PageContainer>
   );

@@ -2,8 +2,12 @@ import routeLinks from "@/routeLinks";
 import colors from "@/value/colors";
 import { css } from "@emotion/react";
 import Link from "next/link";
-import { FC, memo } from "react";
+import { FC, memo, useContext } from "react";
 import NavBarDropdown from "./NavBarDropdown";
+import Image from "next/image";
+import { AppContext } from "@/context/AppContext";
+import SearchBox from "./SearchBox";
+
 const container = css`
   color: ${colors.white10};
   position: fixed;
@@ -39,6 +43,10 @@ const logoLink = css`
     margin-bottom: 0px;
   }
 `;
+
+const searchContainer = css`
+  flex: 1;
+`;
 const logoWrapper = css`
   color: ${colors.red};
   width: 8rem /* 128px */;
@@ -72,28 +80,47 @@ const navItem2 = css`
 const navContainer = css`
   display: flex;
   align-items: flex-start;
-  margin-left: auto;
+  margin-left: 2rem;
 `;
-
-const NavBar: FC<{ username: string }> = memo(({ username }) => {
+const NavBar: FC = memo(() => {
+  const {
+    state: { username },
+  } = useContext(AppContext);
   return (
     <div css={container}>
       <div css={wrapper}>
-        <a css={logoLink}>
-          <div css={logoWrapper}>Netflix</div>
-        </a>
-        <ul css={navItems}>
-          <Link href={routeLinks.homePage} aria-label="Home Page">
-            <li css={navItem}>Home</li>
+        <div css={logoLink}>
+          <Link
+            href={routeLinks.homePage}
+            aria-label="Home Page"
+            css={logoWrapper}
+          >
+            <Image
+              src="/static/netflix.svg"
+              alt="Netflix"
+              height="100"
+              width={100}
+            />
           </Link>
-          <Link href={routeLinks.myList} aria-label="My List">
-            {" "}
-            <li css={navItem2}>My List</li>
-          </Link>
-        </ul>
-        <nav css={navContainer}>
-          <NavBarDropdown username={username} />
-        </nav>
+        </div>
+        {username && (
+          <>
+            <ul css={navItems}>
+              <Link href={routeLinks.homePage} aria-label="Home Page">
+                <li css={navItem}>Home</li>
+              </Link>
+              <Link href={routeLinks.myList} aria-label="My List">
+                <li css={navItem2}>My List</li>
+              </Link>
+            </ul>
+            <div css={searchContainer}>
+              <SearchBox />
+            </div>
+            <div css={navContainer}>
+              <NavBarDropdown username={username} />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

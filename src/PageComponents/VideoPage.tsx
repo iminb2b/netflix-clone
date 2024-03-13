@@ -3,8 +3,14 @@ import PageMeta from "@/components/PageMeta";
 import { getYoutubeVideoById } from "@/lib/getVideo";
 import { css } from "@emotion/react";
 import { GetServerSideProps, NextPage } from "next";
+import colors from "@/value/colors";
+import { useContext, useEffect } from "react";
+import { AppContext } from "@/context/AppContext";
 import { useRouter } from "next/router";
-import { VideoInfoPreview } from "./HomePage";
+import routeLinks from "@/routeLinks";
+import ErrorPageContent from "@/components/ErrorPageContent";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import Link from "next/link";
 
 const modal = css`
   position: absolute;
@@ -13,9 +19,10 @@ const modal = css`
   right: 0;
   margin: 0 auto;
 
-  width: 800px;
+  max-width: 1000px;
+  width: 90vw;
   bottom: 40px;
-  background-color: var(--black40);
+  background-color: ${colors.black40};
   top: 10%;
 
   outline: none;
@@ -43,7 +50,7 @@ const borderBoxShadow = css`
   -moz-background-clip: padding-box;
   background-clip: padding-box;
   opacity: 1;
-  background: linear-gradient(to top, var(--black10), transparent 50%);
+  background: linear-gradient(to top, ${colors.black10}, transparent 50%);
 `;
 
 const videoPlayer = css`
@@ -53,6 +60,8 @@ const videoPlayer = css`
 
 const modalBody = css`
   padding: 0 3rem;
+  display: flex;
+  flex-direction: column;
 `;
 const modalBodyContent = css`
   display: grid;
@@ -69,19 +78,19 @@ const publishTimeLabel = css`
   line-height: 1.75rem /* 28px */;
   margin-top: 1.5rem /* 24px */;
   margin-bottom: 0.5rem /* 8px */;
-  color: var(--green10);
+  color: ${colors.green10};
 `;
 const text = css`
   font-size: 1.125rem /* 18px */;
   line-height: 1.75rem /* 28px */;
-  color: var(--white10);
+  color: ${colors.white10};
 `;
 const descriptionLabel = css`
   margin-bottom: 0.5rem /* 8px */;
   margin-top: 0.75rem /* 12px */;
 `;
 const col2 = css`
-  color: var(--white10);
+  color: ${colors.white10};
   line-height: 1.75rem /* 28px */;
   display: flex;
   flex-direction: column;
@@ -97,25 +106,32 @@ const subTextWrapper = css`
   margin-top: 1.5rem /* 24px */;
 `;
 const textColor = css`
-  color: var(--gray10);
+  color: ${colors.gray10};
 `;
 const channelTitleLabel = css`
-  color: var(--white30);
+  color: ${colors.white30};
   margin: 0px;
 `;
 
-const likeDislikeBtnWrapper = css`
+const playButton = css`
+  padding: 1rem;
+  background-color: ${colors.white20};
+  color: ${colors.black};
+  width: 100%;
+  justify-content: center;
+  align-items: center;
   display: flex;
-  margin-bottom: 0.75rem /* 12px */;
-  position: absolute;
-  top: 35%;
-  padding-left: 1rem /* 48px */;
+  transition: all 0.3s ease-in-out;
+  gap: 0.5rem;
+  :hover {
+    background-color: ${colors.white30};
+  }
 `;
 const btnWrapper = css`
-  border-color: var(--white10);
+  border-color: ${colors.white10};
   border-style: solid;
   border-width: 2px;
-  background-color: var(--gray40);
+  background-color: ${colors.gray40};
   border-radius: 9999px;
   padding: 0.5rem /* 8px */;
   display: flex;
@@ -138,6 +154,19 @@ type VideoPageProps = {
 };
 
 const VideoPage: NextPage<VideoPageProps> = ({ video }) => {
+  const router = useRouter();
+  const {
+    state: { username },
+  } = useContext(AppContext);
+
+  useEffect(() => {
+    if (!username) {
+      router.push(routeLinks.login);
+    }
+  }, []);
+
+  if (!video) return <ErrorPageContent />;
+
   return (
     <PageContainer>
       <PageMeta title="Netflix - Home Page" description={"Nhung Nguyen"} />
@@ -171,6 +200,15 @@ const VideoPage: NextPage<VideoPageProps> = ({ video }) => {
               </p>
             </div>
           </div>
+
+          <Link
+            aria-lable="Play Video"
+            css={playButton}
+            href={routeLinks.video({ videoId: video.id })}
+          >
+            <PlayArrowIcon />
+            Play
+          </Link>
         </div>
       </div>
     </PageContainer>
@@ -186,6 +224,6 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async ({
   const videos = await getYoutubeVideoById(id);
 
   return {
-    props: { video: videos[0] },
+    props: { video: videos[0] ?? null },
   };
 };

@@ -1,4 +1,4 @@
-import { FC, memo } from "react";
+import { FC, memo, useCallback, useContext } from "react";
 import {
   MenuProvider,
   MenuButton,
@@ -8,6 +8,9 @@ import {
 } from "@ariakit/react";
 import { css } from "@emotion/react";
 import colors from "@/value/colors";
+import { AppContext } from "@/context/AppContext";
+import { useRouter } from "next/router";
+import routeLinks from "@/routeLinks";
 
 const usernameBtn = css`
   display: flex;
@@ -23,8 +26,8 @@ const navDropdown = css`
   border-radius: 0.25rem /* 4px */;
   border-color: ${colors.blue};
 
-  box-shadow: var(--shadow30, 0 0 #0000), var(--ring-shadow, 0 0 #0000),
-    var(--shadow30);
+  /* box-shadow: var(-- shadow30, 0 0 #0000), var(--ring-shadow, 0 0 #0000),
+    var(--shadow30); */
 `;
 const linkName = css`
   transition-property: background-color, border-color, color, fill, stroke;
@@ -45,6 +48,12 @@ const linkName = css`
 `;
 
 const NavBarDropdown: FC<{ username: string }> = memo(({ username }) => {
+  const { dispatch } = useContext(AppContext);
+  const router = useRouter();
+  const onSignOutClick = useCallback(() => {
+    dispatch({ type: "logout" });
+    router.push(routeLinks.login);
+  }, []);
   return (
     <MenuProvider>
       <MenuButton className="button" css={usernameBtn}>
@@ -52,11 +61,7 @@ const NavBarDropdown: FC<{ username: string }> = memo(({ username }) => {
         <MenuButtonArrow />
       </MenuButton>
       <Menu gutter={8} className="menu" css={navDropdown}>
-        <MenuItem
-          css={linkName}
-          className="menu-item"
-          onClick={() => alert("Edit")}
-        >
+        <MenuItem css={linkName} className="menu-item" onClick={onSignOutClick}>
           Sign Out
         </MenuItem>
       </Menu>

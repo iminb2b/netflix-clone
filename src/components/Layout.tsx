@@ -1,8 +1,8 @@
 import { css, Global } from "@emotion/react";
-import { FC, memo, ReactNode } from "react";
-import Header from "./Header";
+import { FC, memo, ReactNode, useContext, useEffect } from "react";
 import globalStyles from "@/styles/globalStyles";
 import NavBar from "./Nav/NavBar";
+import { AppContext } from "@/context/AppContext";
 
 const pageContent = css`
   flex: 1 0 auto;
@@ -23,14 +23,27 @@ const pageContainer = css`
 const Layout: FC<{
   children: ReactNode;
 }> = memo(({ children }) => {
+  const {
+    state: { username },
+    dispatch,
+  } = useContext(AppContext);
+
+  useEffect(() => {
+    const getLocalStorage = async () => {
+      const email = localStorage.getItem("username");
+      if (email) {
+        dispatch({ type: "login", username: email });
+      }
+    };
+
+    getLocalStorage();
+  }, []);
   return (
     <div css={pageContainer}>
       <Global styles={globalStyles} />
-      <NavBar username="Min" />
+      {username && <NavBar />}
 
       <div css={pageContent}>{children}</div>
-
-      {/* <Footer /> */}
     </div>
   );
 });

@@ -6,9 +6,9 @@ const pageWrapper = css`
   flex: 1 0 auto;
   flex-flow: column wrap;
   padding: 0;
-  position: relative;
   width: 100%;
   min-height: calc(100vh - 5rem);
+  align-items: center;
 `;
 
 const PageContainer: FC<{ children: ReactNode }> = memo(

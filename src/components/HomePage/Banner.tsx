@@ -2,6 +2,8 @@ import colors from "@/value/colors";
 import { css } from "@emotion/react";
 import { FC, memo, useCallback } from "react";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import Link from "next/link";
+import routeLinks from "@/routeLinks";
 const container = css`
   width: 100%;
   height: 80vh;
@@ -11,19 +13,22 @@ const container = css`
 const leftWrapper = css`
   position: absolute;
   width: 100%;
-  height: 100%;
+  height: 80vh;
   z-index: 10;
+  background-image: linear-gradient(to top, var(--gradient-stops));
+
+  --gradient-stops: rgba(0, 0, 0, 0.5), var(--gradient-to, rgba(0, 0, 0, 0));
 `;
 
 const left = css`
   display: flex;
   justify-content: flex-start;
-  padding-left: 4rem;
-  padding-right: 4rem;
+  padding: 4rem;
+
   height: 100%;
 
   flex-direction: column;
-  margin-top: 6rem;
+  margin-top: 10rem;
 
   @media (min-width: 768px) {
     width: 40%;
@@ -64,7 +69,7 @@ const titleLabel = css`
 const subTitleLabel = css`
   font-size: 1.125rem;
   line-height: 1.75rem;
-  color: var(--white10);
+  color: ${colors.white10};
   -webkit-text-stroke: 1px gray;
 
   @media (min-width: 1024px) {
@@ -98,7 +103,7 @@ const bannerImg = ({ imgUrl }: { imgUrl: string }) => css`
   width: 100%;
   height: 100%;
   bottom: 0px;
-  background-image: linear-gradient(to top, black);
+
   background-image: url(${imgUrl});
   background-size: cover;
   background-position: "50% 50%";
@@ -123,16 +128,15 @@ const btnWithIcon = css`
 const icon = css`
   height: 2rem;
   width: 2rem;
+  color: ${colors.black};
 `;
 
 const Banner: FC<{
   imgUrl: string;
   subTitle: string;
   title: string;
-}> = memo(({ imgUrl, subTitle, title }) => {
-  const handleOnPlay = useCallback(() => {
-    console.log("handleOnPlay");
-  }, []);
+  id: string;
+}> = memo(({ imgUrl, subTitle, title, id }) => {
   return (
     <div css={container}>
       <div css={leftWrapper}>
@@ -145,10 +149,10 @@ const Banner: FC<{
           <h3 css={subTitleLabel}>{subTitle}</h3>
 
           <div css={playBtnWrapper}>
-            <button css={btnWithIcon} onClick={handleOnPlay}>
+            <Link css={btnWithIcon} href={routeLinks.video({ videoId: id })}>
               <PlayArrowIcon css={icon} />
               <span css={playText}>Play</span>
-            </button>
+            </Link>
           </div>
         </div>
       </div>

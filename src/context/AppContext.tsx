@@ -1,22 +1,46 @@
+import { stringify } from "querystring";
 import { ReactNode, createContext, useReducer } from "react";
-import stringsEn from "@/strings/stringsEn.json";
-import { Strings } from "@/types/stringTypes";
 
-export type AppContextType = {};
+type AppAction =
+  | {
+      type: "login";
+      username: string;
+    }
+  | {
+      type: "logout";
+    }
+  | {
+      type: "addWatchingFilm";
+      id: string;
+    };
 
-interface AppAction {
-  type: "enableDarkMode";
-  payload: boolean;
-}
+export type AppState = {
+  username: string | null;
+  watchingFilms: string[];
+};
 
-interface AppState {}
 const appReducer = (state: AppState, action: AppAction) => {
-  const { type, payload } = action;
-  switch (type) {
-    case "enableDarkMode":
+  switch (action.type) {
+    case "login":
       return {
         ...state,
-        darkmode: payload,
+        username: action.username,
+      };
+
+    case "logout":
+      localStorage.setItem("username", "");
+      return {
+        ...state,
+        username: null,
+      };
+
+    case "addWatchingFilm":
+      const films = [...state.watchingFilms, action.id];
+
+      localStorage.setItem("watchingFilms", films.toString());
+      return {
+        ...state,
+        watchingFilms: films,
       };
 
     default:
@@ -25,16 +49,19 @@ const appReducer = (state: AppState, action: AppAction) => {
 };
 
 export const AppContext = createContext<{
-  state: AppContextType;
+  state: AppState;
   dispatch: React.Dispatch<AppAction>;
 }>({
-  state: {},
+  state: {
+    username: null,
+    watchingFilms: [],
+  },
   dispatch: () => null,
 });
 
 export const AppProvider: React.FC<{
   children: ReactNode;
-  initialState: AppContextType;
+  initialState: AppState;
 }> = ({ initialState, children }) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
