@@ -183,7 +183,7 @@ const LoginPage: NextPage = () => {
             </Link>
           </div>
         </header>
-        <form css={main} onSubmit={handleLoginWithEmail}>
+        {/* <form css={main} onSubmit={handleLoginWithEmail}>
           <div css={mainWrapper}>
             <h1 css={signinHeader}>Sign In</h1>
 
@@ -199,7 +199,7 @@ const LoginPage: NextPage = () => {
               Sign In
             </button>
           </div>
-        </form>
+        </form> */}
       </div>
     </PageContainer>
   );

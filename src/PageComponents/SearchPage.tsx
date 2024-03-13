@@ -92,7 +92,7 @@ const SearchPage: NextPage<SearchPageProps> = ({
       <PageMeta title="Netflix - Home Page" description={"Nhung Nguyen"} />
 
       <div css={container}>
-        <form css={searchContainer} onSubmit={onSearchFormSubmit}>
+        {/* <form css={searchContainer} onSubmit={onSearchFormSubmit}>
           <button type="submit">
             <SearchTwoToneIcon css={icon} />
           </button>
@@ -103,7 +103,7 @@ const SearchPage: NextPage<SearchPageProps> = ({
             css={inputContainer}
             defaultValue={searchQuery}
           />
-        </form>
+        </form> */}
 
         <div css={videoContainer}>
           {match(loadingState)
