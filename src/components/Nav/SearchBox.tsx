@@ -40,18 +40,17 @@ const SearchBox: FC = memo(() => {
     router.push(routeLinks.search({ searchQuery }));
   }, []);
   return (
-    <></>
-    // <form css={searchContainer} onSubmit={onSearchFormSubmit}>
-    //   <input
-    //     type="text"
-    //     placeholder="Search..."
-    //     ref={searchInputRef}
-    //     css={inputContainer}
-    //   />
-    //   <button type="submit">
-    //     <SearchTwoToneIcon css={icon} />
-    //   </button>
-    // </form>
+    <form css={searchContainer} onSubmit={onSearchFormSubmit}>
+      <input
+        type="text"
+        placeholder="Search..."
+        ref={searchInputRef}
+        css={inputContainer}
+      />
+      <button type="submit">
+        <SearchTwoToneIcon css={icon} />
+      </button>
+    </form>
   );
 });
 
