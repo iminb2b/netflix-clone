@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "postbuild": "next-on-netlify",
     "lint": "next lint",
     "ts-json-schema-generator": "ts-json-schema-generator --no-type-check --out='src/strings/strings.schema.json' --path='src/types/stringTypes.ts' --tsconfig='tsconfig.json' --type='Strings'"
   },
@@ -23,6 +24,7 @@
     "googleapis": "^129.0.0",
     "keen-slider": "^6.8.6",
     "next": "14.0.4",
+    "next-on-netlify": "^3.0.1",
     "react": "^18.2.0",
     "react-animated-cursor": "^2.11.2",
     "react-dom": "^18.2.0",
