@@ -15,8 +15,9 @@ export const getCommonVideos = async (url: string) => {
       console.error("Youtube API error", data.error);
       return [];
     }
+    const responseData = data ?? videoData;
 
-    return data?.items.map(
+    return responseData?.items.map(
       (item: {
         id: { videoId: any };
         snippet: {
