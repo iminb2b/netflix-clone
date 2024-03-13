@@ -16,6 +16,7 @@ const searchContainer = css`
 const icon = css`
   font-size: 2rem;
   color: ${colors.white};
+  cursor: pointer;
 `;
 const inputContainer = css`
   color: ${colors.white20};

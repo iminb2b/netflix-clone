@@ -5,20 +5,18 @@ export const getCommonVideos = async (url: string) => {
 
   try {
     const BASE_URL = "youtube.googleapis.com/youtube/v3";
-    // const response = await fetch(
-    //   `https://${BASE_URL}/${url}&maxResults=25&key=${YOUTUBE_API_KEY}`,
-    // );
+    const response = await fetch(
+      `https://${BASE_URL}/${url}&maxResults=25&key=${YOUTUBE_API_KEY}`,
+    );
 
-    // const data = await response.json();
+    const data = await response.json();
 
-    // if (data?.error) {
-    //   console.error("Youtube API error", data.error);
-    //   return [];
-    // }
+    if (data?.error) {
+      console.error("Youtube API error", data.error);
+      return [];
+    }
 
-    // console.log({ items: data.items });
-
-    return videoData?.items.map(
+    return data?.items.map(
       (item: {
         id: { videoId: any };
         snippet: {
@@ -67,12 +65,6 @@ export const getPopularVideos = () => {
 
 export const getYoutubeVideoById = (videoId: string) => {
   const URL = `videos?part=statistics%2Csnippet%2CcontentDetails&id=${videoId}`;
-
-  return getCommonVideos(URL);
-};
-
-export const getYoutubeVideoByIds = (videoIds: string) => {
-  const URL = `videos?part=statistics%2Csnippet%2CcontentDetails&id=${videoIds}`;
 
   return getCommonVideos(URL);
 };

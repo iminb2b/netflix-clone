@@ -1,6 +1,6 @@
 import PageContainer from "@/components/PageContainer";
 import PageMeta from "@/components/PageMeta";
-import { getYoutubeVideoById } from "@/lib/getVideo";
+import { getPopularVideos, getYoutubeVideoById } from "@/lib/getVideo";
 import { css } from "@emotion/react";
 import { GetServerSideProps, NextPage } from "next";
 import colors from "@/value/colors";
@@ -11,106 +11,35 @@ import routeLinks from "@/routeLinks";
 import ErrorPageContent from "@/components/ErrorPageContent";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import Link from "next/link";
-
+import VideoInfo from "@/components/VideoPage/VideoInfo";
+import { VideoInfoPreview } from "./HomePage";
+import RelatedVideoList from "@/components/VideoPage/RelatedVideoList";
+import Image from "next/image";
 const modal = css`
-  position: absolute;
-  /** centers modal **/
-  left: 0;
-  right: 0;
   margin: 0 auto;
 
-  max-width: 1000px;
+  max-width: 1200px;
   width: 90vw;
-  bottom: 40px;
-  background-color: ${colors.black40};
-  top: 10%;
+  padding: 0 5rem;
+  padding-top: 8rem;
 
-  outline: none;
-  border-radius: 10px;
   border: 1px solid var(--shadow10);
 
   @media (min-width: 1024px) {
-    top: 10%;
-    bottom: 40px;
-    width: 50%;
+    width: 60%;
   }
-`;
-const overlay = css`
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-`;
-
-const borderBoxShadow = css`
-  -webkit-box-shadow: 0 3px 7px var(--shadow20);
-  -moz-box-shadow: 0 3px 7px var(--shadow20);
-  box-shadow: 0 3px 7px var(--shadow20);
-  -webkit-background-clip: padding-box;
-  -moz-background-clip: padding-box;
-  background-clip: padding-box;
-  opacity: 1;
-  background: linear-gradient(to top, ${colors.black10}, transparent 50%);
 `;
 
 const videoPlayer = css`
   border-radius: 10px 10px 0px 0px;
-  composes: borderBoxShadow;
+  height: 500px;
+  width: 100%;
+  object-fit: cover;
 `;
 
 const modalBody = css`
-  padding: 0 3rem;
   display: flex;
   flex-direction: column;
-`;
-const modalBodyContent = css`
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  column-gap: 2em;
-`;
-const col1 = css`
-  max-height: 50vh /* 208px */;
-  overflow-y: hidden;
-  overflow-y: scroll;
-`;
-const publishTimeLabel = css`
-  font-size: 1.125rem /* 18px */;
-  line-height: 1.75rem /* 28px */;
-  margin-top: 1.5rem /* 24px */;
-  margin-bottom: 0.5rem /* 8px */;
-  color: ${colors.green10};
-`;
-const text = css`
-  font-size: 1.125rem /* 18px */;
-  line-height: 1.75rem /* 28px */;
-  color: ${colors.white10};
-`;
-const descriptionLabel = css`
-  margin-bottom: 0.5rem /* 8px */;
-  margin-top: 0.75rem /* 12px */;
-`;
-const col2 = css`
-  color: ${colors.white10};
-  line-height: 1.75rem /* 28px */;
-  display: flex;
-  flex-direction: column;
-`;
-const subText = css`
-  font-size: 0.875rem /* 14px */;
-  line-height: 1.25rem /* 20px */;
-  margin-left: 0px;
-  overflow-wrap: break-word;
-`;
-const subTextWrapper = css`
-  ${subText}
-  margin-top: 1.5rem /* 24px */;
-`;
-const textColor = css`
-  color: ${colors.gray10};
-`;
-const channelTitleLabel = css`
-  color: ${colors.white30};
-  margin: 0px;
 `;
 
 const playButton = css`
@@ -127,19 +56,6 @@ const playButton = css`
     background-color: ${colors.white30};
   }
 `;
-const btnWrapper = css`
-  border-color: ${colors.white10};
-  border-style: solid;
-  border-width: 2px;
-  background-color: ${colors.gray40};
-  border-radius: 9999px;
-  padding: 0.5rem /* 8px */;
-  display: flex;
-  justify-content: center;
-`;
-const likeBtnWrapper = css`
-  margin-right: 0.5rem /* 8px */;
-`;
 
 type VideoPageProps = {
   video: {
@@ -151,18 +67,23 @@ type VideoPageProps = {
     statistics: { viewCount: number };
     title: string;
   };
+
+  relatedVideos: VideoInfoPreview[];
 };
 
-const VideoPage: NextPage<VideoPageProps> = ({ video }) => {
+const VideoPage: NextPage<VideoPageProps> = ({ video, relatedVideos }) => {
   const router = useRouter();
   const {
     state: { username },
+    dispatch,
   } = useContext(AppContext);
 
   useEffect(() => {
     if (!username) {
       router.push(routeLinks.login);
     }
+
+    dispatch({ type: "addWatchingFilm", ids: [video.id] });
   }, []);
 
   if (!video) return <ErrorPageContent />;
@@ -171,44 +92,27 @@ const VideoPage: NextPage<VideoPageProps> = ({ video }) => {
     <PageContainer>
       <PageMeta title="Netflix - Home Page" description={"Nhung Nguyen"} />
       <div css={modal}>
-        <iframe
-          id="ytplayer"
-          width="100%"
+        <Image
+          src={video.imgUrl}
+          alt={video.title}
           css={videoPlayer}
-          height="360"
-          src={`https://www.youtube.com/embed/${video.id}?autoplay=0&origin=http://example.com&controls=0&rel=1`}
-          frameBorder="0"
-        ></iframe>
+          width={800}
+          height={600}
+        />
 
         <div css={modalBody}>
-          <div css={modalBodyContent}>
-            <div css={col1}>
-              <p css={publishTimeLabel}>{video.publishTime}</p>
-              <p css={text}>{video.title}</p>
-              <p css={descriptionLabel}>{video.description}</p>
-            </div>
-            <div css={col2}>
-              <p css={subTextWrapper}>
-                <span css={textColor}>Cast: </span>
-                <span css={channelTitleLabel}>{video.channelTitle}</span>
-              </p>
-              <p css={subTextWrapper}>
-                <span css={textColor}>View Count: </span>
-                <span css={channelTitleLabel}>
-                  {video.statistics.viewCount}
-                </span>
-              </p>
-            </div>
-          </div>
+          <VideoInfo video={video} />
 
           <Link
             aria-lable="Play Video"
             css={playButton}
-            href={routeLinks.video({ videoId: video.id })}
+            href={routeLinks.videoPlay({ videoId: video.id })}
           >
             <PlayArrowIcon />
             Play
           </Link>
+
+          <RelatedVideoList videos={relatedVideos} />
         </div>
       </div>
     </PageContainer>
@@ -223,7 +127,9 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async ({
   const id = query.videoId?.toString() ?? "4zH5iYM4wJo";
   const videos = await getYoutubeVideoById(id);
 
+  const relatedVideos = await getPopularVideos();
+
   return {
-    props: { video: videos[0] ?? null },
+    props: { video: videos[0] ?? null, relatedVideos },
   };
 };

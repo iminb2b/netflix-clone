@@ -1,6 +1,6 @@
 import PageContainer from "@/components/PageContainer";
 import PageMeta from "@/components/PageMeta";
-import { getYoutubeVideoByIds } from "@/lib/getVideo";
+import { getYoutubeVideoById } from "@/lib/getVideo";
 import { NextPage } from "next";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "@/context/AppContext";
@@ -19,18 +19,28 @@ const container = css`
 const MyListPage: NextPage = () => {
   const router = useRouter();
   const {
-    state: { username, watchingFilms },
+    state: { username, watchingFilms, myList },
+    dispatch,
   } = useContext(AppContext);
   const [films, setFilms] = useState<VideoInfoPreview[]>([]);
+  const [likedList, setLikedList] = useState<VideoInfoPreview[]>([]);
+  const [state, setState] = useState<"loading" | "loaded">("loading");
+
   useEffect(() => {
     if (!username) {
       router.push(routeLinks.login);
     }
     const getVideos = async () => {
-      const videos = await getYoutubeVideoByIds(watchingFilms.join(","));
+      const [videos, list] = await Promise.all([
+        getYoutubeVideoById(watchingFilms.join(",")),
+        getYoutubeVideoById(myList.join(",")),
+      ]);
 
       if (videos) {
         setFilms(videos);
+      }
+      if (list) {
+        setLikedList(list);
       }
     };
     if (watchingFilms) {
@@ -42,7 +52,12 @@ const MyListPage: NextPage = () => {
     <PageContainer>
       <PageMeta title="Netflix - Home Page" description={"Nhung Nguyen"} />
       <div css={container}>
-        <SectionCard videos={films} size="small" title="Continue Watching" />
+        <SectionCard videos={films} size="small" title="My List" />
+        <SectionCard
+          videos={likedList}
+          size="small"
+          title="Continue Watching"
+        />
       </div>
     </PageContainer>
   );

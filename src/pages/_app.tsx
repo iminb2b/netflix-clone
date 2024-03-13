@@ -10,11 +10,10 @@ import { useEffect } from "react";
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
-  const localeInfo = router.asPath.slice(1, 3);
-
   const initialContextValue: AppState = {
     username: null,
     watchingFilms: [],
+    myList: [],
   };
 
   useEffect(() => {

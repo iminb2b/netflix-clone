@@ -1,7 +1,6 @@
 import PageContainer from "@/components/PageContainer";
 import { GetServerSideProps, NextPage } from "next";
 import PageMeta from "@/components/PageMeta";
-import NavBar from "@/components/Nav/NavBar";
 import Banner from "@/components/HomePage/Banner";
 import SectionCard from "@/components/Card/SectionCard";
 import { css } from "@emotion/react";
@@ -53,6 +52,7 @@ export type VideoInfo = {
 export type VideoInfoPreview = {
   title: string;
   imgUrl: string;
+  description: string;
   id: string;
 };
 
@@ -79,38 +79,53 @@ const HomePage: NextPage<HomePageProps> = ({
     }
   }, []);
 
-  const popular = popularVideos[0];
+  const popular = productivityVideos[0];
   return (
     <PageContainer>
       <PageMeta title="Netflix - Home Page" description={"Nhung Nguyen"} />
 
-      <NavBar />
-      <Banner
-        title={popular?.title ?? "Clifford the red dog"}
-        subTitle="a very cute dog"
-        imgUrl={popular?.imgUrl ?? "/static/clifford.webp"}
-        id={popular?.id ?? "4zH5iYM4wJo"}
-      />
-
-      <div css={sectionCardWrapper}>
-        {disneyVideos && (
-          <SectionCard size="medium" videos={disneyVideos} title={"Disney"} />
-        )}
-        {productivityVideos && (
-          <SectionCard
-            size="small"
-            videos={productivityVideos}
-            title={"Productivity"}
+      {username && (
+        <>
+          <Banner
+            title={popular?.title ?? "Clifford the red dog"}
+            subTitle={popular?.description ?? "Clifford the red dog"}
+            imgUrl={popular?.imgUrl ?? "/static/clifford.webp"}
+            id={popular?.id ?? "4zH5iYM4wJo"}
           />
-        )}
-        {travelVideos && (
-          <SectionCard size="large" videos={travelVideos} title={"Travel"} />
-        )}
 
-        {popularVideos && (
-          <SectionCard title="Popular" videos={popularVideos} size="small" />
-        )}
-      </div>
+          <div css={sectionCardWrapper}>
+            {disneyVideos && (
+              <SectionCard
+                size="medium"
+                videos={disneyVideos}
+                title={"Disney"}
+              />
+            )}
+            {productivityVideos && (
+              <SectionCard
+                size="small"
+                videos={productivityVideos}
+                title={"Productivity"}
+              />
+            )}
+            {travelVideos && (
+              <SectionCard
+                size="large"
+                videos={travelVideos}
+                title={"Travel"}
+              />
+            )}
+
+            {popularVideos && (
+              <SectionCard
+                title="Popular"
+                videos={popularVideos}
+                size="small"
+              />
+            )}
+          </div>
+        </>
+      )}
     </PageContainer>
   );
 };

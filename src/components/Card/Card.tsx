@@ -3,7 +3,7 @@ import Image from "next/image";
 import { FC, memo } from "react";
 import { motion } from "framer-motion";
 import { Button, useDialogStore } from "@ariakit/react";
-import VideoPreviewModal from "../Video/VideoPreviewModal";
+import VideoPreviewModal from "../VideoPage/AddToMyList";
 import { VideoInfoPreview } from "@/PageComponents/HomePage";
 import Link from "next/link";
 import routeLinks from "@/routeLinks";

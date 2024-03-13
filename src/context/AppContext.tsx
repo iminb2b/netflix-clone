@@ -1,4 +1,3 @@
-import { stringify } from "querystring";
 import { ReactNode, createContext, useReducer } from "react";
 
 type AppAction =
@@ -11,12 +10,17 @@ type AppAction =
     }
   | {
       type: "addWatchingFilm";
-      id: string;
+      ids: string[];
+    }
+  | {
+      type: "addMyList";
+      ids: string[];
     };
 
 export type AppState = {
   username: string | null;
   watchingFilms: string[];
+  myList: string[];
 };
 
 const appReducer = (state: AppState, action: AppAction) => {
@@ -35,12 +39,29 @@ const appReducer = (state: AppState, action: AppAction) => {
       };
 
     case "addWatchingFilm":
-      const films = [...state.watchingFilms, action.id];
+      const films = [...state.watchingFilms, ...action.ids];
 
-      localStorage.setItem("watchingFilms", films.toString());
+      const filmSet = new Set(films);
+
+      const newFilmList = Array.from(filmSet);
+
+      localStorage.setItem("watchingFilms", newFilmList.join(","));
       return {
         ...state,
-        watchingFilms: films,
+        watchingFilms: newFilmList,
+      };
+
+    case "addMyList":
+      const list = [...state.myList, action.ids[0]];
+
+      const set = new Set(list);
+
+      const newList = Array.from(set);
+
+      localStorage.setItem("myList", newList.join(","));
+      return {
+        ...state,
+        myList: newList,
       };
 
     default:
@@ -55,6 +76,7 @@ export const AppContext = createContext<{
   state: {
     username: null,
     watchingFilms: [],
+    myList: [],
   },
   dispatch: () => null,
 });

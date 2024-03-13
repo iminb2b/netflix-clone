@@ -7,6 +7,7 @@ const routeLinks = {
   login: `/login`,
   myList: `/browse/my-list`,
   video: ({ videoId }: { videoId: string }) => `/video/${videoId}`,
+  videoPlay: ({ videoId }: { videoId: string }) => `/video/${videoId}/play`,
 };
 
 export default routeLinks;

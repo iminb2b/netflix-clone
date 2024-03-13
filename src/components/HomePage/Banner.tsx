@@ -29,6 +29,7 @@ const left = css`
 
   flex-direction: column;
   margin-top: 10rem;
+  gap: 1rem;
 
   @media (min-width: 768px) {
     width: 40%;
@@ -71,6 +72,9 @@ const subTitleLabel = css`
   line-height: 1.75rem;
   color: ${colors.white10};
   -webkit-text-stroke: 1px gray;
+  max-height: 4.3rem;
+  text-overflow: ellipsis;
+  overflow: auto;
 
   @media (min-width: 1024px) {
     font-size: 1.5rem;
