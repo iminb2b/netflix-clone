@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "postbuild": "next-on-netlify",
+    "export": "next export",
+    "deploy": "npm run build && npm run export",
     "lint": "next lint",
     "ts-json-schema-generator": "ts-json-schema-generator --no-type-check --out='src/strings/strings.schema.json' --path='src/types/stringTypes.ts' --tsconfig='tsconfig.json' --type='Strings'"
   },
