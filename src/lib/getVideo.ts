@@ -6,7 +6,7 @@ export const getCommonVideos = async (url: string) => {
   try {
     const BASE_URL = "youtube.googleapis.com/youtube/v3";
     const response = await fetch(
-      `https://${BASE_URL}/${url}&maxResults=25&key=AIzaSyBMhXu9Te9mXq6dvGSSEsacRLKtgmvGank`,
+      `https://${BASE_URL}/${url}&maxResults=25&key=AIzaSyA2BzSrDEBImC6KRXZsE7FfWd4wSCwxWsY`,
     );
 
     const data = await response.json();
