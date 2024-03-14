@@ -2,7 +2,7 @@ import PageContainer from "@/components/PageContainer";
 import PageMeta from "@/components/PageMeta";
 import { getPopularVideos, getYoutubeVideoById } from "@/lib/getVideo";
 import { css } from "@emotion/react";
-import { GetServerSideProps, NextPage } from "next";
+import { NextPage } from "next";
 import colors from "@/value/colors";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "@/context/AppContext";
@@ -12,9 +12,9 @@ import ErrorPageContent from "@/components/ErrorPageContent";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import Link from "next/link";
 import VideoInfo from "@/components/VideoPage/VideoInfo";
-import { VideoInfoPreview } from "./HomePage";
 import RelatedVideoList from "@/components/VideoPage/RelatedVideoList";
 import Image from "next/image";
+import { match } from "ts-pattern";
 const modal = css`
   margin: 0 auto;
 
@@ -58,18 +58,16 @@ const playButton = css`
 `;
 
 type VideoPageProps = {
-  video: {
-    channelTitle: string;
-    description: string;
-    id: string;
-    imgUrl: string;
-    publishTime: string;
-    statistics: { viewCount: number };
-    title: string;
-  };
+  channelTitle: string;
+  description: string;
+  id: string;
+  imgUrl: string;
+  publishTime: string;
+  statistics: { viewCount: number };
+  title: string;
 };
 
-const VideoPage: NextPage<VideoPageProps> = ({ video }) => {
+const VideoPage: NextPage = () => {
   const router = useRouter();
   const {
     state: {
@@ -80,13 +78,22 @@ const VideoPage: NextPage<VideoPageProps> = ({ video }) => {
   } = useContext(AppContext);
 
   const [relatedVideos, setRelatedVideos] = useState(popularVideos);
-
+  const [video, setVideo] = useState<VideoPageProps>();
+  const [loadingState, setLoadingState] = useState<"loading" | "loaded">(
+    "loading",
+  );
   useEffect(() => {
     if (!username) {
       router.push(routeLinks.login);
     }
+    const getVideo = async () => {
+      const videos = await getYoutubeVideoById(
+        router.query.videoId?.toString() ?? "",
+      );
 
-    dispatch({ type: "addWatchingFilm", ids: [video.id] });
+      setVideo(videos[0]);
+      dispatch({ type: "addWatchingFilm", ids: [videos[0].id] });
+    };
 
     const getNewVideos = async () => {
       if (popularVideos.length === 0) {
@@ -96,7 +103,9 @@ const VideoPage: NextPage<VideoPageProps> = ({ video }) => {
       }
     };
 
+    getVideo();
     getNewVideos();
+    setLoadingState("loaded");
   }, []);
 
   if (!video) return <ErrorPageContent />;
@@ -104,43 +113,39 @@ const VideoPage: NextPage<VideoPageProps> = ({ video }) => {
   return (
     <PageContainer>
       <PageMeta title="Netflix - Home Page" description={"Nhung Nguyen"} />
-      <div css={modal}>
-        <Image
-          src={video.imgUrl}
-          alt={video.title}
-          css={videoPlayer}
-          width={800}
-          height={600}
-        />
+      {match(loadingState)
+        .with("loading", () => <div css={modal}></div>)
+        .with("loaded", () => (
+          <div css={modal}>
+            <Image
+              src={video.imgUrl}
+              alt={video.title}
+              css={videoPlayer}
+              width={800}
+              height={600}
+            />
 
-        <div css={modalBody}>
-          <VideoInfo video={video} />
+            <div css={modalBody}>
+              <VideoInfo video={video} />
 
-          <Link
-            aria-lable="Play Video"
-            css={playButton}
-            href={routeLinks.videoPlay({ videoId: video.id })}
-          >
-            <PlayArrowIcon />
-            Play
-          </Link>
+              <Link
+                aria-lable="Play Video"
+                css={playButton}
+                href={routeLinks.videoPlay({ videoId: video.id })}
+              >
+                <PlayArrowIcon />
+                Play
+              </Link>
 
-          <RelatedVideoList videos={relatedVideos} />
-        </div>
-      </div>
+              <RelatedVideoList videos={relatedVideos} />
+            </div>
+          </div>
+        ))
+        .otherwise(() => (
+          <></>
+        ))}
     </PageContainer>
   );
 };
 
 export default VideoPage;
-
-export const getServerSideProps: GetServerSideProps<VideoPageProps> = async ({
-  query,
-}) => {
-  const id = query.videoId?.toString() ?? "4zH5iYM4wJo";
-  const videos = await getYoutubeVideoById(id);
-
-  return {
-    props: { video: videos[0] ?? null },
-  };
-};

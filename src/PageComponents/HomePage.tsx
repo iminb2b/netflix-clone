@@ -6,7 +6,7 @@ import SectionCard from "@/components/Card/SectionCard";
 import { css } from "@emotion/react";
 import { getPopularVideos, getVideos } from "@/lib/getVideo";
 import { useRouter } from "next/router";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "@/context/AppContext";
 import routeLinks from "@/routeLinks";
 
@@ -56,30 +56,37 @@ export type VideoInfoPreview = {
   id: string;
 };
 
-type HomePageProps = {
-  disneyVideos: VideoInfoPreview[];
-  productivityVideos: VideoInfoPreview[];
-  travelVideos: VideoInfoPreview[];
-  popularVideos: VideoInfoPreview[];
-};
-const HomePage: NextPage<HomePageProps> = ({
-  disneyVideos,
-  productivityVideos,
-  travelVideos,
-  popularVideos,
-}) => {
+type HomePageProps = {};
+const HomePage: NextPage<HomePageProps> = ({}) => {
   const router = useRouter();
   const {
     state: { username },
     dispatch,
   } = useContext(AppContext);
+  const [videos, setVideos] = useState<{
+    disneyVideos: VideoInfoPreview[];
+    productivityVideos: VideoInfoPreview[];
+    travelVideos: VideoInfoPreview[];
+    popularVideos: VideoInfoPreview[];
+  }>({
+    disneyVideos: [],
+    productivityVideos: [],
+    travelVideos: [],
+    popularVideos: [],
+  });
 
   useEffect(() => {
     if (!username) {
       router.push(routeLinks.login);
     }
 
-    if (disneyVideos && productivityVideos && travelVideos && popularVideos) {
+    const getYoutubeVideos = async () => {
+      const disneyVideos = await getVideos("disney trailer");
+      const productivityVideos = await getVideos("Lee Chang Sub");
+
+      const travelVideos = await getVideos("indie music");
+      const popularVideos = await getPopularVideos();
+
       const videos = {
         disneyVideos,
         productivityVideos,
@@ -87,10 +94,13 @@ const HomePage: NextPage<HomePageProps> = ({
         popularVideos,
       };
       dispatch({ type: "addVideos", videos });
-    }
+      setVideos(videos);
+    };
+
+    getYoutubeVideos();
   }, []);
 
-  const popular = productivityVideos[0];
+  const popular = videos.productivityVideos[0];
   return (
     <PageContainer>
       <PageMeta title="Netflix - Home Page" description={"Nhung Nguyen"} />
@@ -105,32 +115,32 @@ const HomePage: NextPage<HomePageProps> = ({
           />
 
           <div css={sectionCardWrapper}>
-            {disneyVideos && (
+            {videos.disneyVideos && (
               <SectionCard
                 size="medium"
-                videos={disneyVideos}
+                videos={videos.disneyVideos}
                 title={"Disney"}
               />
             )}
-            {productivityVideos && (
+            {videos.productivityVideos && (
               <SectionCard
                 size="small"
-                videos={productivityVideos}
+                videos={videos.productivityVideos}
                 title={"Productivity"}
               />
             )}
-            {travelVideos && (
+            {videos.travelVideos && (
               <SectionCard
                 size="large"
-                videos={travelVideos}
+                videos={videos.travelVideos}
                 title={"Travel"}
               />
             )}
 
-            {popularVideos && (
+            {videos.popularVideos && (
               <SectionCard
                 title="Popular"
-                videos={popularVideos}
+                videos={videos.popularVideos}
                 size="small"
               />
             )}
@@ -142,17 +152,3 @@ const HomePage: NextPage<HomePageProps> = ({
 };
 
 export default HomePage;
-
-export const getServerSideProps: GetServerSideProps<
-  HomePageProps
-> = async () => {
-  const disneyVideos = await getVideos("disney trailer");
-  const productivityVideos = await getVideos("Lee Chang Sub");
-
-  const travelVideos = await getVideos("indie music");
-  const popularVideos = await getPopularVideos();
-
-  return {
-    props: { disneyVideos, productivityVideos, travelVideos, popularVideos },
-  };
-};

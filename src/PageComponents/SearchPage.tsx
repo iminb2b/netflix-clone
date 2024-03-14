@@ -3,7 +3,7 @@ import PageMeta from "@/components/PageMeta";
 import { AppContext } from "@/context/AppContext";
 import routeLinks from "@/routeLinks";
 import { css } from "@emotion/react";
-import { GetServerSideProps, NextPage } from "next";
+import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import SearchTwoToneIcon from "@mui/icons-material/SearchTwoTone";
@@ -42,22 +42,14 @@ const videoContainer = css`
   padding: 4rem 0;
 `;
 
-type SearchPageProps = {
-  searchVideos: VideoInfoPreview[];
-  query: any;
-};
-
-const SearchPage: NextPage<SearchPageProps> = ({ searchVideos, query }) => {
+const SearchPage: NextPage = () => {
   const router = useRouter();
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [searchResults, setSearchResult] = useState<VideoInfoPreview[]>(
-    searchVideos ?? [],
-  );
+  const [searchResults, setSearchResult] = useState<VideoInfoPreview[]>([]);
   const [loadingState, setLoadingState] = useState<"loading" | "loaded">(
-    "loaded",
+    "loading",
   );
-  const searchQuery = router.query.searchQuery ?? "";
-  console.log(query);
+  const searchQuery = router.query.searchQuery?.toString() ?? "";
   const {
     state: {
       username,
@@ -71,6 +63,13 @@ const SearchPage: NextPage<SearchPageProps> = ({ searchVideos, query }) => {
       router.push(routeLinks.login);
     }
 
+    const getSearchVideos = async () => {
+      if (searchQuery) {
+        const searchVideos = await getVideos(searchQuery ?? "");
+
+        setSearchResult(searchVideos);
+      }
+    };
     const getNewVideos = async () => {
       if (popularVideos.length === 0) {
         const newVideos = await getPopularVideos();
@@ -78,8 +77,10 @@ const SearchPage: NextPage<SearchPageProps> = ({ searchVideos, query }) => {
         setPopularVideos(newVideos);
       }
     };
-
+    getSearchVideos();
     getNewVideos();
+
+    setLoadingState("loaded");
   }, []);
 
   const onSearchFormSubmit = useCallback(async (e: any) => {
@@ -91,7 +92,7 @@ const SearchPage: NextPage<SearchPageProps> = ({ searchVideos, query }) => {
 
       if (videos) {
         setSearchResult(videos);
-        setInterval(() => setLoadingState("loaded"), 2000);
+        setLoadingState("loaded");
       }
     }
   }, []);
@@ -138,13 +139,3 @@ const SearchPage: NextPage<SearchPageProps> = ({ searchVideos, query }) => {
 };
 
 export default SearchPage;
-
-export const getServerSideProps: GetServerSideProps<SearchPageProps> = async ({
-  query,
-}) => {
-  const searchVideos = await getVideos(query.searchQuery?.toString() ?? "");
-
-  return {
-    props: { searchVideos, query },
-  };
-};
