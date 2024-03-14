@@ -1,3 +1,4 @@
+import { VideoInfoPreview } from "@/PageComponents/HomePage";
 import { ReactNode, createContext, useReducer } from "react";
 
 type AppAction =
@@ -15,12 +16,27 @@ type AppAction =
   | {
       type: "addMyList";
       ids: string[];
+    }
+  | {
+      type: "addVideos";
+      videos: {
+        disneyVideos: VideoInfoPreview[];
+        productivityVideos: VideoInfoPreview[];
+        travelVideos: VideoInfoPreview[];
+        popularVideos: VideoInfoPreview[];
+      };
     };
 
 export type AppState = {
   username: string | null;
   watchingFilms: string[];
   myList: string[];
+  videos: {
+    disneyVideos: VideoInfoPreview[];
+    productivityVideos: VideoInfoPreview[];
+    travelVideos: VideoInfoPreview[];
+    popularVideos: VideoInfoPreview[];
+  };
 };
 
 const appReducer = (state: AppState, action: AppAction) => {
@@ -36,6 +52,12 @@ const appReducer = (state: AppState, action: AppAction) => {
       return {
         ...state,
         username: null,
+      };
+
+    case "addVideos":
+      return {
+        ...state,
+        videos: action.videos,
       };
 
     case "addWatchingFilm":
@@ -77,6 +99,12 @@ export const AppContext = createContext<{
     username: null,
     watchingFilms: [],
     myList: [],
+    videos: {
+      disneyVideos: [],
+      productivityVideos: [],
+      travelVideos: [],
+      popularVideos: [],
+    },
   },
   dispatch: () => null,
 });

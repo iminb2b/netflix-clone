@@ -71,11 +71,22 @@ const HomePage: NextPage<HomePageProps> = ({
   const router = useRouter();
   const {
     state: { username },
+    dispatch,
   } = useContext(AppContext);
 
   useEffect(() => {
     if (!username) {
       router.push(routeLinks.login);
+    }
+
+    if (disneyVideos && productivityVideos && travelVideos && popularVideos) {
+      const videos = {
+        disneyVideos,
+        productivityVideos,
+        travelVideos,
+        popularVideos,
+      };
+      dispatch({ type: "addVideos", videos });
     }
   }, []);
 

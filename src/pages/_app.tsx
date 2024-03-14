@@ -8,12 +8,16 @@ import { AppState, AppProvider } from "@/context/AppContext";
 import { useEffect } from "react";
 
 export default function App({ Component, pageProps }: AppProps) {
-  const router = useRouter();
-
   const initialContextValue: AppState = {
     username: null,
     watchingFilms: [],
     myList: [],
+    videos: {
+      disneyVideos: [],
+      productivityVideos: [],
+      travelVideos: [],
+      popularVideos: [],
+    },
   };
 
   useEffect(() => {

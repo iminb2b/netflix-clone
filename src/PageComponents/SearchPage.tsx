@@ -43,16 +43,11 @@ const videoContainer = css`
 `;
 
 type SearchPageProps = {
-  popularVideos: VideoInfoPreview[];
   searchVideos: VideoInfoPreview[];
   query: any;
 };
 
-const SearchPage: NextPage<SearchPageProps> = ({
-  popularVideos,
-  searchVideos,
-  query,
-}) => {
+const SearchPage: NextPage<SearchPageProps> = ({ searchVideos, query }) => {
   const router = useRouter();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [searchResults, setSearchResult] = useState<VideoInfoPreview[]>(
@@ -64,13 +59,27 @@ const SearchPage: NextPage<SearchPageProps> = ({
   const searchQuery = router.query.searchQuery ?? "";
   console.log(query);
   const {
-    state: { username },
+    state: {
+      username,
+      videos: { popularVideos: video },
+    },
   } = useContext(AppContext);
+  const [popularVideos, setPopularVideos] = useState(video);
 
   useEffect(() => {
     if (!username) {
       router.push(routeLinks.login);
     }
+
+    const getNewVideos = async () => {
+      if (popularVideos.length === 0) {
+        const newVideos = await getPopularVideos();
+
+        setPopularVideos(newVideos);
+      }
+    };
+
+    getNewVideos();
   }, []);
 
   const onSearchFormSubmit = useCallback(async (e: any) => {
@@ -133,10 +142,9 @@ export default SearchPage;
 export const getServerSideProps: GetServerSideProps<SearchPageProps> = async ({
   query,
 }) => {
-  const popularVideos = await getPopularVideos();
   const searchVideos = await getVideos(query.searchQuery?.toString() ?? "");
 
   return {
-    props: { popularVideos, searchVideos, query },
+    props: { searchVideos, query },
   };
 };

@@ -4,7 +4,7 @@ import { getPopularVideos, getYoutubeVideoById } from "@/lib/getVideo";
 import { css } from "@emotion/react";
 import { GetServerSideProps, NextPage } from "next";
 import colors from "@/value/colors";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "@/context/AppContext";
 import { useRouter } from "next/router";
 import routeLinks from "@/routeLinks";
@@ -67,16 +67,19 @@ type VideoPageProps = {
     statistics: { viewCount: number };
     title: string;
   };
-
-  relatedVideos: VideoInfoPreview[];
 };
 
-const VideoPage: NextPage<VideoPageProps> = ({ video, relatedVideos }) => {
+const VideoPage: NextPage<VideoPageProps> = ({ video }) => {
   const router = useRouter();
   const {
-    state: { username },
+    state: {
+      username,
+      videos: { popularVideos },
+    },
     dispatch,
   } = useContext(AppContext);
+
+  const [relatedVideos, setRelatedVideos] = useState(popularVideos);
 
   useEffect(() => {
     if (!username) {
@@ -84,6 +87,16 @@ const VideoPage: NextPage<VideoPageProps> = ({ video, relatedVideos }) => {
     }
 
     dispatch({ type: "addWatchingFilm", ids: [video.id] });
+
+    const getNewVideos = async () => {
+      if (popularVideos.length === 0) {
+        const newVideos = await getPopularVideos();
+
+        setRelatedVideos(newVideos);
+      }
+    };
+
+    getNewVideos();
   }, []);
 
   if (!video) return <ErrorPageContent />;
@@ -127,9 +140,7 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async ({
   const id = query.videoId?.toString() ?? "4zH5iYM4wJo";
   const videos = await getYoutubeVideoById(id);
 
-  const relatedVideos = await getPopularVideos();
-
   return {
-    props: { video: videos[0] ?? null, relatedVideos },
+    props: { video: videos[0] ?? null },
   };
 };
