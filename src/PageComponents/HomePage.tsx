@@ -107,12 +107,14 @@ const HomePage: NextPage<HomePageProps> = ({}) => {
 
       {username && (
         <>
-          <Banner
-            title={popular?.title ?? "Clifford the red dog"}
-            subTitle={popular?.description ?? "Clifford the red dog"}
-            imgUrl={popular?.imgUrl ?? "/static/clifford.webp"}
-            id={popular?.id ?? "4zH5iYM4wJo"}
-          />
+          {popular && (
+            <Banner
+              title={popular?.title ?? "Clifford the red dog"}
+              subTitle={popular?.description ?? "Clifford the red dog"}
+              imgUrl={popular?.imgUrl ?? "/static/clifford.webp"}
+              id={popular?.id ?? "4zH5iYM4wJo"}
+            />
+          )}
 
           <div css={sectionCardWrapper}>
             {videos.disneyVideos && (
